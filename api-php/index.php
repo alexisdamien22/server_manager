@@ -3,9 +3,10 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/Router.php';
-require_once __DIR__ . '/controllers/ServersController.php';
-require_once __DIR__ . '/controllers/HostsController.php';
-require_once __DIR__ . '/controllers/GamesController.php';
+require_once __DIR__ . '/Controllers/ServersController.php';
+require_once __DIR__ . '/Controllers/HostsController.php';
+require_once __DIR__ . '/Controllers/GamesController.php';
+require_once __DIR__ . '/Controllers/ConfigsController.php';
 
 $router = new Router();
 
@@ -18,6 +19,9 @@ $router->delete('/api/servers/:id', [ServersController::class, 'delete']);
 // HOST ROUTES
 $router->get('/api/hosts', [HostsController::class, 'list']);
 $router->get('/api/hosts/:id', [HostsController::class, 'get']);
+$router->post('/api/hosts', [HostsController::class, 'create']);
+$router->put('/api/hosts/:id', [HostsController::class, 'update']);
+$router->delete('/api/hosts/:id', [HostsController::class, 'delete']);
 
 // GAME ROUTES
 $router->get('/api/games', [GamesController::class, 'list']);
