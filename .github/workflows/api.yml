@@ -1,0 +1,108 @@
+
+name: API Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api-php/**'
+      - 'Dotenv/**'
+      - 'database/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - '.github/workflows/api.yml'
+
+  pull_request:
+    branches: [main]
+    paths:
+      - 'api-php/**'
+      - 'Dotenv/**'
+      - 'database/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
+      - '.github/workflows/api.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: server_manager_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test_user -d server_manager_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_NAME: server_manager_test
+      DB_USER: test_user
+      DB_PASS: test_password
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo, pdo_pgsql
+          coverage: none
+
+      - name: Setup Composer
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create environment file
+        run: |
+          printf "DB_HOST=%s\nDB_PORT=%s\nDB_NAME=%s\nDB_USER=%s\nDB_PASS=%s\n" \
+            "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" "$DB_PASS" > .env
+
+      - name: Install database schema
+        run: |
+          PGPASSWORD="$DB_PASS" psql \
+            -h "$DB_HOST" \
+            -p "$DB_PORT" \
+            -U "$DB_USER" \
+            -d "$DB_NAME" \
+            -v ON_ERROR_STOP=1 \
+            -f database/database.sql
+
+      - name: Check PHP syntax
+        run: |
+          find api-php Dotenv tests -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Start PHP API
+        run: |
+          php -S 127.0.0.1:8000 \
+            -t api-php api-php/index.php \
+            > /tmp/api.log 2>&1 &
+
+      - name: Wait for API
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/api/hosts; then
+              echo "API is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat /tmp/api.log
+          exit 1
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
