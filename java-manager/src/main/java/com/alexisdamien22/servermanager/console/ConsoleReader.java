@@ -1,5 +1,8 @@
 package com.alexisdamien22.servermanager.console;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class ConsoleReader
         implements Runnable {
 
