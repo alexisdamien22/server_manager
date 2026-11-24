@@ -11,45 +11,83 @@ import java.nio.charset.StandardCharsets;
 public class StartApplicationHandler
         implements HttpHandler {
 
-    private final ApplicationManager manager;
+    private final ApplicationManager applicationManager;
 
     public StartApplicationHandler(
-            ApplicationManager manager) {
+            ApplicationManager applicationManager) {
 
-        this.manager = manager;
+        this.applicationManager = applicationManager;
     }
 
     @Override
     public void handle(HttpExchange exchange)
             throws IOException {
 
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("POST")) {
+
+            exchange.sendResponseHeaders(405, -1);
+            return;
+        }
+
         String query =
                 exchange.getRequestURI()
                         .getQuery();
 
-        String id = query.replace(
-                "id=",
-                ""
-        );
+        if (query == null || !query.startsWith("id=")) {
 
-        manager.startApplication(id);
+            exchange.sendResponseHeaders(400, -1);
+            return;
+        }
 
-        String response =
-                "{\"status\":\"started\"}";
+        String id = query.substring(3);
 
-        exchange.sendResponseHeaders(
-                200,
-                response.length()
-        );
+        try {
 
-        try (OutputStream os =
-                     exchange.getResponseBody()) {
+            applicationManager.startApplication(id);
 
-            os.write(
-                    response.getBytes(
-                            StandardCharsets.UTF_8
-                    )
+            String response =
+                    "{\"status\":\"started\"}";
+
+            exchange.getResponseHeaders().add(
+                    "Content-Type",
+                    "application/json"
             );
+
+            exchange.sendResponseHeaders(
+                    200,
+                    response.getBytes().length
+            );
+
+            try (OutputStream os =
+                         exchange.getResponseBody()) {
+
+                os.write(
+                        response.getBytes(
+                                StandardCharsets.UTF_8
+                        )
+                );
+            }
+
+        } catch (Exception exception) {
+
+            String response =
+                    "{\"status\":\"error\"}";
+
+            exchange.sendResponseHeaders(
+                    500,
+                    response.getBytes().length
+            );
+
+            try (OutputStream os =
+                         exchange.getResponseBody()) {
+
+                os.write(
+                        response.getBytes(
+                                StandardCharsets.UTF_8
+                        )
+                );
+            }
         }
     }
 }
