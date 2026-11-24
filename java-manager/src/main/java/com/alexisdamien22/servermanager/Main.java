@@ -27,7 +27,7 @@ public class Main {
         server.start();
 
         System.out.println(
-            "Manager started"
+            "Manager started on port 9000"
         );
     }
 }
