@@ -1,0 +1,9 @@
+servers:
+
+  - id: survival
+
+    name: Survival SMP
+
+    workingDirectory: ./servers/survival
+
+    startupCommand: java -jar paper.jar nogui
