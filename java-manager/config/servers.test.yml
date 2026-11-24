@@ -1,0 +1,16 @@
+applications:
+
+  - id: console-test
+
+    name: Console Test
+
+    type: test
+
+    workingDirectory: /tmp
+
+    startupCommand:
+      - bash
+      - -c
+      - echo HELLO_MANAGER
+
+    autoStart: true
