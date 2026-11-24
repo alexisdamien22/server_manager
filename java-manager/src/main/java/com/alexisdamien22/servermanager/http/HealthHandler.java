@@ -11,25 +11,25 @@ public class HealthHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange)
-            throws IOException {
+        throws IOException {
 
         String response = "{\"status\":\"UP\"}";
 
         exchange.getResponseHeaders()
-                .add("Content-Type", "application/json");
+            .add("Content-Type", "application/json");
 
         exchange.sendResponseHeaders(
-                200,
-                response.getBytes().length
+            200,
+            response.getBytes().length
         );
 
         try (OutputStream os =
-                     exchange.getResponseBody()) {
+            exchange.getResponseBody()) {
 
             os.write(
-                    response.getBytes(
-                            StandardCharsets.UTF_8
-                    )
+                response.getBytes(
+                    StandardCharsets.UTF_8
+                )
             );
         }
     }

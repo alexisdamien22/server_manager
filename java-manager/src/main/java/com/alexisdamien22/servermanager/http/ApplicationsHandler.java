@@ -10,28 +10,28 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ApplicationsHandler
-        implements HttpHandler {
+    implements HttpHandler {
 
     private final ApplicationManager applicationManager;
 
     public ApplicationsHandler(
-            ApplicationManager applicationManager) {
+        ApplicationManager applicationManager) {
 
         this.applicationManager =
-                applicationManager;
+            applicationManager;
     }
 
     @Override
     public void handle(HttpExchange exchange)
-            throws IOException {
+        throws IOException {
 
         StringBuilder json =
-                new StringBuilder("[");
+            new StringBuilder("[");
 
         boolean first = true;
 
         for (ManagedApplication app :
-                applicationManager.getApplications()) {
+            applicationManager.getApplications()) {
 
             if (!first) {
                 json.append(",");
@@ -63,23 +63,23 @@ public class ApplicationsHandler
         String response = json.toString();
 
         exchange.getResponseHeaders()
-                .add(
-                        "Content-Type",
-                        "application/json"
-                );
+            .add(
+                "Content-Type",
+                "application/json"
+            );
 
         exchange.sendResponseHeaders(
-                200,
-                response.getBytes().length
+            200,
+            response.getBytes().length
         );
 
         try (OutputStream os =
-                     exchange.getResponseBody()) {
+                exchange.getResponseBody()) {
 
             os.write(
-                    response.getBytes(
-                            StandardCharsets.UTF_8
-                    )
+                response.getBytes(
+                    StandardCharsets.UTF_8
+                )
             );
         }
     }
