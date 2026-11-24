@@ -58,6 +58,17 @@ jobs:
           echo "$RESPONSE"
 
           echo "$RESPONSE" | grep "console-test"
+      
+      - name: Verify Start Endpoint
+        run: |
+          curl -X POST \
+            "http://127.0.0.1:9000/applications/start?id=console-test"
+
+      - name: Verify Application Running
+        run: |
+          curl -s \
+            http://127.0.0.1:9000/applications \
+            | grep "console-test"
 
       - name: Verify Console Output
         run: |
@@ -70,11 +81,8 @@ jobs:
             fi
 
             sleep 1
-
             done
 
             echo "Console output not found"
-
             cat /tmp/manager.log
-
             exit 1
