@@ -1,30 +1,98 @@
 package config;
 
+import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.config.ConfigLoader;
 import com.alexisdamien22.servermanager.config.ManagerConfig;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class ConfigLoaderTest {
+public class ConfigLoaderTest {
+
     @Test
-    void shouldLoadServers() {
-        ConfigLoader loader = new ConfigLoader();
+    void shouldLoadConfiguration()
+            throws Exception {
 
-        try {
-            ManagerConfig config = loader.load();
-            assertEquals(
-                1,
-                config.getServers().size()
-            );
+        ConfigLoader loader =
+                new ConfigLoader();
 
-            assertEquals(
+        ManagerConfig config =
+                loader.load();
+
+        assertNotNull(config);
+
+        assertNotNull(
+                config.getApplications()
+        );
+
+        assertFalse(
+                config.getApplications()
+                        .isEmpty()
+        );
+    }
+
+    @Test
+    void shouldLoadFirstApplication()
+            throws Exception {
+
+        ConfigLoader loader =
+                new ConfigLoader();
+
+        ManagerConfig config =
+                loader.load();
+
+        ApplicationConfig application =
+                config.getApplications()
+                      .get(0);
+
+        assertNotNull(
+                application.getId()
+        );
+
+        assertNotNull(
+                application.getName()
+        );
+
+        assertNotNull(
+                application.getType()
+        );
+
+        assertNotNull(
+                application.getWorkingDirectory()
+        );
+
+        assertNotNull(
+                application.getStartupCommand()
+        );
+    }
+
+    @Test
+    void shouldLoadExpectedApplication()
+            throws Exception {
+
+        ConfigLoader loader =
+                new ConfigLoader();
+
+        ManagerConfig config =
+                loader.load();
+
+        ApplicationConfig app =
+                config.getApplications()
+                        .get(0);
+
+        assertEquals(
                 "survival",
-                config.getServers().get(0).getId()
-            );
-        } catch (Exception exception) {
-            throw new AssertionError("Failed to load configuration", exception);
-        }  
+                app.getId()
+        );
+
+        assertEquals(
+                "minecraft",
+                app.getType()
+        );
+
+        assertFalse(
+                app.isAutoStart()
+        );
     }
 }
