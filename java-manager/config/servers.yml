@@ -6,4 +6,4 @@ servers:
 
     workingDirectory: ./servers/survival
 
-    startupCommand: java -jar paper.jar nogui
+    startupCommand: java -jar paper.jar

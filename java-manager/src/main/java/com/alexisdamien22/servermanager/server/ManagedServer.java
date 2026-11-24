@@ -7,6 +7,14 @@ public class ManagedServer {
     private ServerConfig config;
     private Process process;
 
+    public ManagedServer(
+            ServerConfig config,
+            Process process) {
+
+        this.config = config;
+        this.process = process;
+    }
+
     public String getId() {
         return config.getId();
     }
