@@ -1,38 +1,50 @@
 package com.alexisdamien22.servermanager.console;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ConsoleReader
         implements Runnable {
 
-    private final Process process;
+    private final String applicationId;
 
-    public ConsoleReader(Process process) {
-        this.process = process;
+    private final InputStream stream;
+
+    public ConsoleReader(
+            String applicationId,
+            InputStream stream) {
+
+        this.applicationId = applicationId;
+        this.stream = stream;
     }
 
     @Override
     public void run() {
 
-        try (BufferedReader reader =
+        try (
+            BufferedReader reader =
                 new BufferedReader(
-                    new InputStreamReader(
-                        process.getInputStream()
-                    ))) {
+                    new InputStreamReader(stream)
+                )
+        ) {
 
             String line;
 
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine())
+                    != null) {
 
-                System.out.println(
-                    "[SERVER] " + line
+                System.out.printf(
+                        "[%s] %s%n",
+                        applicationId,
+                        line
                 );
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        } catch (Exception exception) {
+
+            exception.printStackTrace();
+
+        }
     }
 }

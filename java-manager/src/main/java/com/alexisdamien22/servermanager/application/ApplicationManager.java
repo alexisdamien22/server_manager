@@ -1,6 +1,7 @@
 package com.alexisdamien22.servermanager.application;
 
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
+import com.alexisdamien22.servermanager.console.ConsoleReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,6 +28,18 @@ public class ApplicationManager {
 
         Process process =
                 launcher.launch(config);
+
+        Thread consoleThread =
+        new Thread(
+                new ConsoleReader(
+                        config.getId(),
+                        process.getInputStream()
+                )
+        );
+
+        consoleThread.setDaemon(true);
+
+        consoleThread.start();
 
         ManagedApplication application =
                 new ManagedApplication(
