@@ -4,9 +4,11 @@ import com.alexisdamien22.servermanager.application.ApplicationManager;
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.config.ConfigLoader;
 import com.alexisdamien22.servermanager.config.ManagerConfig;
+import com.alexisdamien22.servermanager.http.ApplicationStatusHandler;
 import com.alexisdamien22.servermanager.http.ApplicationsHandler;
 import com.alexisdamien22.servermanager.http.HealthHandler;
 import com.alexisdamien22.servermanager.http.StartApplicationHandler;
+import com.alexisdamien22.servermanager.http.StopApplicationHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
@@ -66,6 +68,20 @@ public class Main {
         server.createContext(
             "/applications/start",
             new StartApplicationHandler(
+                applicationManager
+            )
+        );
+
+        server.createContext(
+            "/applications/status",
+            new ApplicationStatusHandler(
+                applicationManager
+            )
+        );
+
+        server.createContext(
+            "/applications/stop",
+            new StopApplicationHandler(
                 applicationManager
             )
         );
