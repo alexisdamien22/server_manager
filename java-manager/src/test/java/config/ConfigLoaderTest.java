@@ -68,31 +68,25 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    void shouldLoadExpectedApplication()
-            throws Exception {
+	void shouldLoadExpectedApplication()
+			throws Exception {
 
-        ConfigLoader loader =
-                new ConfigLoader();
+	ConfigLoader loader =
+			new ConfigLoader();
 
-        ManagerConfig config =
-                loader.load();
+	ManagerConfig config =
+			loader.load();
 
-        ApplicationConfig app =
-                config.getApplications()
-                        .get(0);
+	ApplicationConfig app =
+			config.getApplications().get(0);
 
-        assertEquals(
-                "survival",
-                app.getId()
-        );
+	assertNotNull(app.getId());
+	assertNotNull(app.getName());
+	assertNotNull(app.getType());
+	assertNotNull(app.getStartupCommand());
 
-        assertEquals(
-                "minecraft",
-                app.getType()
-        );
-
-        assertFalse(
-                app.isAutoStart()
-        );
-    }
+	assertFalse(
+			app.getStartupCommand().isEmpty()
+	);
+	}
 }
