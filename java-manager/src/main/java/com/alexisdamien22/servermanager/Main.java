@@ -4,6 +4,7 @@ import com.alexisdamien22.servermanager.application.ApplicationManager;
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.config.ConfigLoader;
 import com.alexisdamien22.servermanager.config.ManagerConfig;
+import com.alexisdamien22.servermanager.http.ApplicationsHandler;
 import com.alexisdamien22.servermanager.http.HealthHandler;
 import com.sun.net.httpserver.HttpServer;
 
@@ -38,26 +39,33 @@ public class Main {
                 );
 
                 applicationManager.startApplication(
-                        application
+                    application
                 );
             }
         }
 
         HttpServer server =
-                HttpServer.create(
-                        new InetSocketAddress(9000),
-                        0
-                );
+            HttpServer.create(
+                    new InetSocketAddress(9000),
+                    0
+            );
 
         server.createContext(
                 "/health",
                 new HealthHandler()
         );
 
+        server.createContext(
+            "/applications",
+            new ApplicationsHandler(
+                applicationManager
+            )
+        );
+
         server.start();
 
         System.out.println(
-                "Manager started on port 9000"
+            "Manager started on port 9000"
         );
     }
 }
