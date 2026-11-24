@@ -26,7 +26,7 @@ public class Main {
                 loader.load();
 
         ApplicationManager applicationManager =
-                new ApplicationManager();
+                new ApplicationManager(config);
 
         for (ApplicationConfig application :
                 config.getApplications()) {
