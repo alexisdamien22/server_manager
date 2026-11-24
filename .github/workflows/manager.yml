@@ -1,0 +1,54 @@
+name: Manager Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'java-manager/**'
+      - '.github/workflows/manager.yml'
+
+  pull_request:
+    branches: [main]
+    paths:
+      - 'java-manager/**'
+      - '.github/workflows/manager.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: java-manager
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build
+        run: mvn -B clean package
+
+      - name: Start Manager
+        run: |
+          java -cp target/classes \
+            com.alexisdamien22.servermanager.Main \
+            > /tmp/manager.log 2>&1 &
+
+      - name: Wait For Manager
+        run: |
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:9000/health; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat /tmp/manager.log
+          exit 1
