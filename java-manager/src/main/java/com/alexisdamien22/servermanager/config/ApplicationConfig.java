@@ -1,11 +1,20 @@
 package com.alexisdamien22.servermanager.config;
 
-public class ServerConfig {
+import java.util.List;
 
-    private String id;
+public class ApplicationConfig {
+
+   private String id;
+
     private String name;
+
+    private String type;
+
     private String workingDirectory;
-    private String startupCommand;
+
+    private List<String> startupCommand;
+
+    private boolean autoStart;
 
     public String getId() {
         return id;
@@ -23,6 +32,14 @@ public class ServerConfig {
         this.name = name;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getWorkingDirectory() {
         return workingDirectory;
     }
@@ -31,11 +48,19 @@ public class ServerConfig {
         this.workingDirectory = workingDirectory;
     }
 
-    public String getStartupCommand() {
+    public List<String> getStartupCommand() {
         return startupCommand;
     }
 
-    public void setStartupCommand(String startupCommand) {
+    public void setStartupCommand(List<String> startupCommand) {
         this.startupCommand = startupCommand;
+    }
+
+    public boolean isAutoStart() {
+        return autoStart;
+    }
+
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
     }
 }

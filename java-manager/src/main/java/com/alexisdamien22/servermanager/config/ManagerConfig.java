@@ -4,13 +4,14 @@ import java.util.List;
 
 public class ManagerConfig {
 
-    private List<ServerConfig> servers;
+    private List<ApplicationConfig> applications;
 
-    public List<ServerConfig> getServers() {
-        return servers;
+    public List<ApplicationConfig> getApplications() {
+        return applications;
     }
 
-    public void setServers(List<ServerConfig> servers) {
-        this.servers = servers;
+    public void setApplications(
+            List<ApplicationConfig> applications) {
+        this.applications = applications;
     }
 }
