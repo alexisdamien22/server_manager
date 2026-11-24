@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ConfigLoader {
 
     private static final String CONFIG_PATH =
-            "config/servers.yml";
+            "config/servers.test.yml";
 
     public ManagerConfig load()
             throws IOException {
