@@ -37,8 +37,8 @@ jobs:
 
       - name: Start Manager
         run: |
-          java -cp target/classes \
-            com.alexisdamien22.servermanager.Main \
+          mvn exec:java \
+            -Dexec.mainClass=com.alexisdamien22.servermanager.Main \
             > /tmp/manager.log 2>&1 &
 
       - name: Wait For Manager
