@@ -4,8 +4,10 @@ import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.console.ConsoleReader;
 
 import java.io.IOException;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
 
 public class ApplicationManager {
 
@@ -104,5 +106,9 @@ public class ApplicationManager {
     public int getRunningCount() {
 
         return runningApplications.size();
+    }
+
+    public Collection<ManagedApplication> getApplications() {
+        return runningApplications.values();
     }
 }
