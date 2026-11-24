@@ -51,3 +51,20 @@ applications:
       - start
 
     autoStart: true
+
+  - id: console-test
+
+    name: Console Test
+
+    type: test
+
+    workingDirectory: /tmp
+
+    startupCommand:
+      - bash
+      - -c
+      - |
+        echo HELLO_MANAGER
+        sleep 2
+
+    autoStart: true
