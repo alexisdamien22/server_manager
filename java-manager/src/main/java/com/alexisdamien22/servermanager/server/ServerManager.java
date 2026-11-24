@@ -9,4 +9,18 @@ public class ServerManager {
             runningServers =
                 new ConcurrentHashMap<>();
 
+    public void register(
+            ManagedServer server) {
+
+        runningServers.put(
+                server.getId(),
+                server
+        );
+    }
+
+    public boolean isRunning(
+            String id) {
+
+        return runningServers.containsKey(id);
+    }
 }
