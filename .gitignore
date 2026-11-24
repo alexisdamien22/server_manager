@@ -2,3 +2,4 @@ data/servers/*
 .env
 /vendor/
 /.phpunit.cache/
+*.class
