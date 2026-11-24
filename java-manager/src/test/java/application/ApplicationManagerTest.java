@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.alexisdamien22.servermanager.application.ApplicationManager;
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
+import com.alexisdamien22.servermanager.config.ManagerConfig;
 
 public class ApplicationManagerTest {
     @Test
@@ -26,8 +27,17 @@ public class ApplicationManagerTest {
                 List.of("sleep", "5")
         );
 
+        ManagerConfig managerConfig =
+            new ManagerConfig();
+
+        managerConfig.setApplications(
+            List.of(config)
+        );
+
         ApplicationManager manager =
-                new ApplicationManager();
+            new ApplicationManager(
+                managerConfig
+            );
 
         manager.startApplication(config);
 

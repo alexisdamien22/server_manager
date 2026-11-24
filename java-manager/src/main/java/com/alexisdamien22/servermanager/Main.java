@@ -6,6 +6,7 @@ import com.alexisdamien22.servermanager.config.ConfigLoader;
 import com.alexisdamien22.servermanager.config.ManagerConfig;
 import com.alexisdamien22.servermanager.http.ApplicationsHandler;
 import com.alexisdamien22.servermanager.http.HealthHandler;
+import com.alexisdamien22.servermanager.http.StartApplicationHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
@@ -26,7 +27,7 @@ public class Main {
                 loader.load();
 
         ApplicationManager applicationManager =
-                new ApplicationManager();
+                new ApplicationManager(config);
 
         for (ApplicationConfig application :
                 config.getApplications()) {
@@ -46,18 +47,25 @@ public class Main {
 
         HttpServer server =
             HttpServer.create(
-                    new InetSocketAddress(9000),
-                    0
+                new InetSocketAddress(9000),
+                0
             );
 
         server.createContext(
-                "/health",
-                new HealthHandler()
+            "/health",
+            new HealthHandler()
         );
 
         server.createContext(
             "/applications",
             new ApplicationsHandler(
+                applicationManager
+            )
+        );
+
+        server.createContext(
+            "/applications/start",
+            new StartApplicationHandler(
                 applicationManager
             )
         );

@@ -1,6 +1,7 @@
 package com.alexisdamien22.servermanager.application;
 
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
+import com.alexisdamien22.servermanager.config.ManagerConfig;
 import com.alexisdamien22.servermanager.console.ConsoleReader;
 
 import java.io.IOException;
@@ -11,12 +12,29 @@ import java.util.Collection;
 
 public class ApplicationManager {
 
+	private final Map<String, ApplicationConfig>
+        configuredApplications =
+        new ConcurrentHashMap<>();
+
     private final Map<String, ManagedApplication>
             runningApplications =
             new ConcurrentHashMap<>();
 
     private final ApplicationLauncher launcher =
             new ApplicationLauncher();
+	
+	public ApplicationManager(
+		ManagerConfig config) {
+
+		for (ApplicationConfig application :
+				config.getApplications()) {
+
+			configuredApplications.put(
+					application.getId(),
+					application
+			);
+		}
+	}
 
     public ManagedApplication startApplication(
             ApplicationConfig config)
@@ -56,6 +74,22 @@ public class ApplicationManager {
 
         return application;
     }
+
+	public ManagedApplication startApplication(
+		String id)
+		throws IOException {
+
+		ApplicationConfig config =
+			configuredApplications.get(id);
+
+		if (config == null) {
+			throw new IllegalArgumentException(
+				"Unknown application: " + id
+			);
+		}
+
+		return startApplication(config);
+	}
 
     public boolean stopApplication(
             String id) {
