@@ -1,5 +1,7 @@
 package com.alexisdamien22.servermanager.console;
 
+import com.alexisdamien22.servermanager.console.ConsoleManager;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,14 +11,18 @@ public class ConsoleReader
 
     private final String applicationId;
 
-    private final InputStream stream;
+    private final ConsoleManager consoleManager;
+
+    private final InputStream inputStream;
 
     public ConsoleReader(
-            String applicationId,
-            InputStream stream) {
+        String applicationId,
+        InputStream inputStream,
+        ConsoleManager consoleManager) {
 
         this.applicationId = applicationId;
-        this.stream = stream;
+        this.inputStream = inputStream;
+        this.consoleManager = consoleManager;
     }
 
     @Override
@@ -25,19 +31,23 @@ public class ConsoleReader
         try (
             BufferedReader reader =
                 new BufferedReader(
-                    new InputStreamReader(stream)
+                    new InputStreamReader(inputStream)
                 )
         ) {
 
             String line;
 
-            while ((line = reader.readLine())
-                    != null) {
+            while ((line = reader.readLine()) != null) {
+
+                consoleManager.append(
+                    applicationId,
+                    line
+                );
 
                 System.out.printf(
-                        "[%s] %s%n",
-                        applicationId,
-                        line
+                    "[%s] %s%n",
+                    applicationId,
+                    line
                 );
             }
 
