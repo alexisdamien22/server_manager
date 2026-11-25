@@ -11,6 +11,8 @@ applications:
     startupCommand:
       - bash
       - -c
-      - echo HELLO_MANAGER
+      - |
+        echo HELLO_MANAGER
+        sleep 30
 
-    autoStart: true
+    autoStart: false
