@@ -56,6 +56,8 @@ jobs:
             http://127.0.0.1:9000/applications)
 
           echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep "console-test"
       
       - name: Verify Start Endpoint
         run: |
