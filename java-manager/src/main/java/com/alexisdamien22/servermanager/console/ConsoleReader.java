@@ -1,7 +1,5 @@
 package com.alexisdamien22.servermanager.console;
 
-import com.alexisdamien22.servermanager.console.ConsoleManager;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
