@@ -1,7 +1,6 @@
 package com.alexisdamien22.servermanager.http;
 
 import com.alexisdamien22.servermanager.application.ApplicationManager;
-import com.alexisdamien22.servermanager.console.ConsoleManager;
 import com.alexisdamien22.servermanager.console.ConsoleMessage;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -41,8 +40,6 @@ public class ApplicationLogsHandler
 
             return;
         }
-
-       //TODO: Implement logic to retrieve and return application logs based on the provided application ID.
 
         String id =
             query.substring(3);
