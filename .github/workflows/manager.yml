@@ -68,6 +68,7 @@ jobs:
         run: |
           curl -s \
             "http://127.0.0.1:9000/applications/status?id=console-test" \
+            | echo "$RESPONSE" \
             | grep '"running":true'
 
       - name: Stop Application
