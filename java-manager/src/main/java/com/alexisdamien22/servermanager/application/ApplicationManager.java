@@ -36,53 +36,93 @@ public class ApplicationManager {
 		}
 	}
 
-    public ManagedApplication startApplication(
-            ApplicationConfig config)
-            throws IOException {
+    public synchronized ManagedApplication startApplication(
+        ApplicationConfig config)
+        throws IOException {
 
-        if (isRunning(config.getId())) {
-            return runningApplications.get(
-                    config.getId()
-            );
-        }
+		System.out.println(
+			"Attempting to start: "
+			+ config.getId()
+		);
 
-        Process process =
-                launcher.launch(config);
+		if (isRunning(config.getId())) {
 
-        Thread consoleThread =
-        new Thread(
-                new ConsoleReader(
-                        config.getId(),
-                        process.getInputStream()
-                )
-        );
+			System.out.println(
+				"Already running: "
+				+ config.getId()
+			);
 
-        consoleThread.setDaemon(true);
+			return runningApplications.get(
+				config.getId()
+			);
+		}
 
-        consoleThread.start();
+		Process process =
+			launcher.launch(config);
 
-        ManagedApplication application =
-                new ManagedApplication(
-                        config,
-                        process
-                );
+		System.out.println(
+			"Process started for: "
+			+ config.getId()
+		);
 
-        runningApplications.put(
-                config.getId(),
-                application
-        );
+		Thread consoleThread =
+				new Thread(
+					new ConsoleReader(
+						config.getId(),
+						process.getInputStream()
+					)
+				);
 
-        return application;
-    }
+		consoleThread.setDaemon(true);
+
+		consoleThread.start();
+
+		ManagedApplication application =
+			new ManagedApplication(
+				config,
+				process
+			);
+
+		runningApplications.put(
+			config.getId(),
+			application
+		);
+
+		System.out.println(
+			"Registered application: "
+			+ config.getId()
+		);
+
+		System.out.println(
+			"Running applications: "
+			+ runningApplications.size()
+		);
+
+		return application;
+	}
 
 	public ManagedApplication startApplication(
-		String id)
+        String id)
 		throws IOException {
+
+		System.out.println(
+			"Start requested: " + id
+		);
+
+		System.out.println(
+			"Configured applications: "
+			+ configuredApplications.size()
+		);
 
 		ApplicationConfig config =
 			configuredApplications.get(id);
 
 		if (config == null) {
+
+			System.out.println(
+				"Application not found: " + id
+			);
+
 			throw new IllegalArgumentException(
 				"Unknown application: " + id
 			);
@@ -92,30 +132,50 @@ public class ApplicationManager {
 	}
 
     public boolean stopApplication(
-            String id) {
+        String id) {
 
-        ManagedApplication application =
-                runningApplications.get(id);
+		System.out.println(
+			"Stop requested: " + id
+		);
 
-        if (application == null) {
-            return false;
-        }
+		ManagedApplication application =
+			runningApplications.get(id);
 
-        Process process =
-                application.getProcess();
+		if (application == null) {
 
-        process.destroy();
+			System.out.println(
+				"Application not running: "
+				+ id
+			);
 
-        runningApplications.remove(id);
+			return false;
+		}
 
-        return true;
-    }
+		Process process =
+			application.getProcess();
+
+		process.destroy();
+
+		runningApplications.remove(id);
+
+		System.out.println(
+			"Stopped application: "
+			+ id
+		);
+
+		System.out.println(
+			"Running applications: "
+			+ runningApplications.size()
+		);
+
+		return true;
+	}
 
     public boolean isRunning(
             String id) {
 
         ManagedApplication application =
-                runningApplications.get(id);
+            runningApplications.get(id);
 
         if (application == null) {
             return false;
@@ -134,15 +194,22 @@ public class ApplicationManager {
     public ManagedApplication getApplication(
             String id) {
 
-        return runningApplications.get(id);
-    }
+		return runningApplications.get(id);
+	}
 
-    public int getRunningCount() {
+	public int getRunningCount() {
 
-        return runningApplications.size();
-    }
+		return runningApplications.size();
+	}
 
-    public Collection<ManagedApplication> getApplications() {
-        return runningApplications.values();
-    }
+	public Collection<ManagedApplication>
+		getRunningApplications() {
+
+		System.out.println(
+			"Running applications requested. Count = "
+			+ runningApplications.size()
+		);
+
+		return runningApplications.values();
+	}
 }

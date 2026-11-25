@@ -31,7 +31,7 @@ public class ApplicationsHandler
         boolean first = true;
 
         for (ManagedApplication app :
-            applicationManager.getApplications()) {
+            applicationManager.getRunningApplications()) {
 
             if (!first) {
                 json.append(",");
