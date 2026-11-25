@@ -195,11 +195,12 @@ public class ApplicationManager {
 	public Collection<ManagedApplication>
 		getRunningApplications() {
 
-		System.out.println(
-			"Running applications requested. Count = "
-			+ runningApplications.size()
-		);
-
 		return runningApplications.values();
+	}
+
+	public Collection<ApplicationConfig>
+        getConfiguredApplications() {
+
+		return configuredApplications.values();
 	}
 }

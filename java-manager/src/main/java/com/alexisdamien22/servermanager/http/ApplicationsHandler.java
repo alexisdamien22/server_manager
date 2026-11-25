@@ -1,7 +1,7 @@
 package com.alexisdamien22.servermanager.http;
 
 import com.alexisdamien22.servermanager.application.ApplicationManager;
-import com.alexisdamien22.servermanager.application.ManagedApplication;
+import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -30,12 +30,17 @@ public class ApplicationsHandler
 
         boolean first = true;
 
-        for (ManagedApplication app :
-            applicationManager.getRunningApplications()) {
+        for (ApplicationConfig app :
+                applicationManager.getConfiguredApplications()) {
 
             if (!first) {
                 json.append(",");
             }
+
+            boolean running =
+                    applicationManager.isRunning(
+                            app.getId()
+                    );
 
             json.append("{")
                 .append("\"id\":\"")
@@ -51,7 +56,7 @@ public class ApplicationsHandler
                 .append("\",")
 
                 .append("\"running\":")
-                .append(app.isRunning())
+                .append(running)
 
                 .append("}");
 
