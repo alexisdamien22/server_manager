@@ -9,30 +9,30 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class StartApplicationHandler
-        implements HttpHandler {
+    implements HttpHandler {
 
     private final ApplicationManager applicationManager;
 
     public StartApplicationHandler(
-            ApplicationManager applicationManager) {
+        ApplicationManager applicationManager) {
 
         this.applicationManager = applicationManager;
     }
 
     @Override
     public void handle(HttpExchange exchange)
-            throws IOException {
+        throws IOException {
 
         if (!exchange.getRequestMethod()
-                .equalsIgnoreCase("POST")) {
+            .equalsIgnoreCase("POST")) {
 
             exchange.sendResponseHeaders(405, -1);
             return;
         }
 
         String query =
-                exchange.getRequestURI()
-                        .getQuery();
+            exchange.getRequestURI()
+                .getQuery();
 
         if (query == null || !query.startsWith("id=")) {
 
@@ -47,45 +47,45 @@ public class StartApplicationHandler
             applicationManager.startApplication(id);
 
             String response =
-                    "{\"status\":\"started\"}";
+                "{\"status\":\"started\"}";
 
             exchange.getResponseHeaders().add(
-                    "Content-Type",
-                    "application/json"
+                "Content-Type",
+                "application/json"
             );
 
             exchange.sendResponseHeaders(
-                    200,
-                    response.getBytes().length
+                200,
+                response.getBytes().length
             );
 
             try (OutputStream os =
-                         exchange.getResponseBody()) {
+                exchange.getResponseBody()) {
 
                 os.write(
-                        response.getBytes(
-                                StandardCharsets.UTF_8
-                        )
+                    response.getBytes(
+                        StandardCharsets.UTF_8
+                    )
                 );
             }
 
         } catch (Exception exception) {
 
             String response =
-                    "{\"status\":\"error\"}";
+                "{\"status\":\"error\"}";
 
             exchange.sendResponseHeaders(
-                    500,
-                    response.getBytes().length
+                500,
+                response.getBytes().length
             );
 
             try (OutputStream os =
-                         exchange.getResponseBody()) {
+                exchange.getResponseBody()) {
 
                 os.write(
-                        response.getBytes(
-                                StandardCharsets.UTF_8
-                        )
+                    response.getBytes(
+                        StandardCharsets.UTF_8
+                    )
                 );
             }
         }

@@ -56,8 +56,6 @@ jobs:
             http://127.0.0.1:9000/applications)
 
           echo "$RESPONSE"
-
-          echo "$RESPONSE" | grep "console-test"
       
       - name: Verify Start Endpoint
         run: |
@@ -103,3 +101,9 @@ jobs:
             echo "Console output not found"
             cat /tmp/manager.log
             exit 1
+        
+      - name: Debug Manager Log
+        if: always()
+        run: |
+          echo "===== MANAGER LOG ====="
+          cat /tmp/manager.log
