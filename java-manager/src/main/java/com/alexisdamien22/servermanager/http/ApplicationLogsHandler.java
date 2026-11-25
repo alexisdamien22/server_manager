@@ -49,46 +49,55 @@ public class ApplicationLogsHandler
 
         StringBuilder logsBuilder = new StringBuilder();
         logsBuilder.append("[");
+
         for (int i = 0; i < logs.size(); i++) {
             ConsoleMessage log = logs.get(i);
-            logsBuilder.append("\"").append(log.getMessage()).append("\"");
+
+            logsBuilder
+                .append("\"")
+                .append(escapeJson(log.getMessage()))
+                .append("\"");
+
             if (i < logs.size() - 1) {
                 logsBuilder.append(",");
             }
         }
+
         logsBuilder.append("]");
 
         String response =
             String.format(
-                    """
-                    {
-                      "id":"%s",
-                      "logs":%s
-                    }
-                    """,
-                    id,
-                    logsBuilder.toString()
+                """
+                {
+                "id":"%s",
+                "logs":%s
+                }
+                """,
+                escapeJson(id),
+                logsBuilder.toString()
             );
 
-        exchange.getResponseHeaders()
-            .add(
-                "Content-Type",
-                "application/json"
-            );
+        byte[] bytes =
+            response.getBytes(StandardCharsets.UTF_8);
 
         exchange.sendResponseHeaders(
             200,
-            response.getBytes().length
+            bytes.length
         );
 
         try (OutputStream os =
                 exchange.getResponseBody()) {
 
-            os.write(
-                response.getBytes(
-                    StandardCharsets.UTF_8
-                )
-            );
+            os.write(bytes);
         }
+    }
+
+    private static String escapeJson(String text) {
+        return text
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\t", "\\t");
     }
 }
