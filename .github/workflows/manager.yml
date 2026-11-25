@@ -73,6 +73,15 @@ jobs:
 
           echo "$RESPONSE" | grep '"running":true'
 
+      - name: Verify Logs Endpoint
+        run: |
+          RESPONSE=$(curl -s \
+            "http://127.0.0.1:9000/applications/logs?id=console-test")
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep "HELLO_MANAGER"
+
       - name: Stop Application
         run: |
           curl -X POST \
