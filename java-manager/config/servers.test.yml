@@ -16,3 +16,74 @@ applications:
         sleep 300
 
     autoStart: false
+
+applications:
+
+  - id: survival
+    name: Survival SMP
+    type: minecraft
+
+    workingDirectory: ./servers/survival
+
+    startupCommand:
+      - java
+      - -Xms2G
+      - -Xmx4G
+      - -jar
+      - paper.jar
+      - nogui
+
+    autoStart: false
+
+  - id: factorio
+    name: Factorio Server
+    type: factorio
+
+    workingDirectory: ./servers/factorio
+
+    startupCommand:
+      - ./bin/x64/factorio
+      - --start-server-load-latest
+
+    autoStart: false
+
+  - id: discord-bot
+    name: Community Bot
+    type: bot
+
+    workingDirectory: ./bots/community
+
+    startupCommand:
+      - node
+      - index.js
+
+    autoStart: false
+
+  - id: website
+    name: Portfolio Website
+    type: web
+
+    workingDirectory: ./website
+
+    startupCommand:
+      - npm
+      - start
+
+    autoStart: false
+
+  - id: console-test
+
+    name: Console Test
+
+    type: test
+
+    workingDirectory: /tmp
+
+    startupCommand:
+      - bash
+      - -c
+      - |
+        echo HELLO_MANAGER
+        sleep 2
+
+    autoStart: false

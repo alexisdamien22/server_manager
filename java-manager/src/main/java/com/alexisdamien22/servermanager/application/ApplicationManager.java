@@ -88,16 +88,6 @@ public class ApplicationManager {
 			application
 		);
 
-		System.out.println(
-			"Registered application: "
-			+ config.getId()
-		);
-
-		System.out.println(
-			"Running applications: "
-			+ runningApplications.size()
-		);
-
 		return application;
 	}
 
@@ -205,11 +195,12 @@ public class ApplicationManager {
 	public Collection<ManagedApplication>
 		getRunningApplications() {
 
-		System.out.println(
-			"Running applications requested. Count = "
-			+ runningApplications.size()
-		);
-
 		return runningApplications.values();
+	}
+
+	public Collection<ApplicationConfig>
+        getConfiguredApplications() {
+
+		return configuredApplications.values();
 	}
 }
