@@ -88,16 +88,6 @@ public class ApplicationManager {
 			application
 		);
 
-		System.out.println(
-			"Registered application: "
-			+ config.getId()
-		);
-
-		System.out.println(
-			"Running applications: "
-			+ runningApplications.size()
-		);
-
 		return application;
 	}
 
