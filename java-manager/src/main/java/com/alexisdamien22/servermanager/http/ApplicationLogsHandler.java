@@ -44,11 +44,22 @@ public class ApplicationLogsHandler
 
        //TODO: Implement logic to retrieve and return application logs based on the provided application ID.
 
-       String id =
+        String id =
             query.substring(3);
 
-       List<ConsoleMessage> logs =
+        List<ConsoleMessage> logs =
             this.applicationManager.getConsoleManager().getMessages(id);
+
+        StringBuilder logsBuilder = new StringBuilder();
+        logsBuilder.append("[");
+        for (int i = 0; i < logs.size(); i++) {
+            ConsoleMessage log = logs.get(i);
+            logsBuilder.append("\"").append(log.getMessage()).append("\"");
+            if (i < logs.size() - 1) {
+                logsBuilder.append(",");
+            }
+        }
+        logsBuilder.append("]");
 
         String response =
             String.format(
@@ -59,7 +70,7 @@ public class ApplicationLogsHandler
                     }
                     """,
                     id,
-                    logs.toString()
+                    logsBuilder.toString()
             );
 
         exchange.getResponseHeaders()
