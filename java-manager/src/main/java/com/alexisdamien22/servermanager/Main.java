@@ -9,6 +9,7 @@ import com.alexisdamien22.servermanager.http.ApplicationsHandler;
 import com.alexisdamien22.servermanager.http.HealthHandler;
 import com.alexisdamien22.servermanager.http.StartApplicationHandler;
 import com.alexisdamien22.servermanager.http.StopApplicationHandler;
+import com.alexisdamien22.servermanager.http.ApplicationLogsHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
@@ -82,6 +83,13 @@ public class Main {
         server.createContext(
             "/applications/stop",
             new StopApplicationHandler(
+                applicationManager
+            )
+        );
+
+        server.createContext(
+            "/applications/logs",
+            new ApplicationLogsHandler(
                 applicationManager
             )
         );

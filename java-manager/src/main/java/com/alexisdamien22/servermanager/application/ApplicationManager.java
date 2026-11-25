@@ -2,6 +2,7 @@ package com.alexisdamien22.servermanager.application;
 
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.config.ManagerConfig;
+import com.alexisdamien22.servermanager.console.ConsoleManager;
 import com.alexisdamien22.servermanager.console.ConsoleReader;
 
 import java.io.IOException;
@@ -17,21 +18,28 @@ public class ApplicationManager {
         new ConcurrentHashMap<>();
 
     private final Map<String, ManagedApplication>
-            runningApplications =
-            new ConcurrentHashMap<>();
+        runningApplications =
+        new ConcurrentHashMap<>();
 
     private final ApplicationLauncher launcher =
-            new ApplicationLauncher();
+        new ApplicationLauncher();
+
+	private final ConsoleManager consoleManager =
+        new ConsoleManager();
+
+	public ConsoleManager getConsoleManager() {
+		return consoleManager;
+	}
 	
 	public ApplicationManager(
 		ManagerConfig config) {
 
 		for (ApplicationConfig application :
-				config.getApplications()) {
+			config.getApplications()) {
 
 			configuredApplications.put(
-					application.getId(),
-					application
+				application.getId(),
+				application
 			);
 		}
 	}
@@ -66,12 +74,13 @@ public class ApplicationManager {
 		);
 
 		Thread consoleThread =
-				new Thread(
-					new ConsoleReader(
-						config.getId(),
-						process.getInputStream()
-					)
-				);
+			new Thread(
+				new ConsoleReader(
+					config.getId(),
+					process.getInputStream(),
+					consoleManager
+				)
+			);
 
 		consoleThread.setDaemon(true);
 
@@ -86,6 +95,13 @@ public class ApplicationManager {
 		runningApplications.put(
 			config.getId(),
 			application
+		);
+
+		System.out.println(
+			"Messages stored: "
+			+ consoleManager.getMessageCount(
+				config.getId()
+			)
 		);
 
 		return application;
