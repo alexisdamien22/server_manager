@@ -66,10 +66,12 @@ jobs:
 
       - name: Verify Application Running
         run: |
-          curl -s \
-            "http://127.0.0.1:9000/applications/status?id=console-test" \
-            | echo "$RESPONSE" \
-            | grep '"running":true'
+          RESPONSE=$(curl -s \
+            http://127.0.0.1:9000/applications/status?id=console-test)
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep '"running":true'
 
       - name: Stop Application
         run: |
@@ -78,9 +80,12 @@ jobs:
 
       - name: Verify Stopped
         run: |
-          curl -s \
-            "http://127.0.0.1:9000/applications/status?id=console-test" \
-            | grep '"running":false'
+          RESPONSE=$(curl -s \
+            "http://127.0.0.1:9000/applications/status?id=console-test")
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep '"running":false'
 
       - name: Verify Console Output
         run: |
