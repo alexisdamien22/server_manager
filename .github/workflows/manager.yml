@@ -67,8 +67,19 @@ jobs:
       - name: Verify Application Running
         run: |
           curl -s \
-            http://127.0.0.1:9000/applications \
-            | grep "console-test"
+            http://127.0.0.1:9000/applications/status?id=console-test" \
+            | grep '"running":true'
+
+      - name: Stop Application
+        run: |
+          curl -X POST \
+            "http://127.0.0.1:9000/applications/stop?id=console-test"
+
+      - name: Verify Stopped
+        run: |
+          curl -s \
+            "http://127.0.0.1:9000/applications/status?id=console-test" \
+            | grep '"running":false'
 
       - name: Verify Console Output
         run: |
