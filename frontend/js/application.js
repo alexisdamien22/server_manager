@@ -30,11 +30,55 @@ function renderApplications(
                     : '<span class="stopped">🔴 Stopped</span>'
                 }
                 </p>
+
+                <div class="actions">
+
+                    <button
+                        onclick="handleStart('${application.id}')">
+                        Start
+                    </button>
+
+                    <button
+                        onclick="handleStop('${application.id}')">
+                        Stop
+                    </button>
+
+                    <button
+                        onclick="handleRestart('${application.id}')">
+                        Restart
+                    </button>
+
+                </div>
             `;
+
 
             container.appendChild(
                 card
             );
         }
     );
+}
+
+async function handleStart(
+    id) {
+
+    await startApplication(id);
+
+    await refreshApplications();
+}
+
+async function handleStop(
+    id) {
+
+    await stopApplication(id);
+
+    await refreshApplications();
+}
+
+async function handleRestart(
+    id) {
+
+    await restartApplication(id);
+
+    await refreshApplications();
 }

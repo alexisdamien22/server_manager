@@ -10,3 +10,36 @@ async function getApplications() {
 
     return response.json();
 }
+
+async function startApplication(
+    id) {
+
+    await fetch(
+        `${API_URL}/applications/start?id=${id}`,
+        {
+            method: "POST"
+        }
+    );
+}
+
+async function stopApplication(
+    id) {
+
+    await fetch(
+        `${API_URL}/applications/stop?id=${id}`,
+        {
+            method: "POST"
+        }
+    );
+}
+
+async function restartApplication(
+    id) {
+
+    await fetch(
+        `${API_URL}/applications/restart?id=${id}`,
+        {
+            method: "POST"
+        }
+    );
+}
