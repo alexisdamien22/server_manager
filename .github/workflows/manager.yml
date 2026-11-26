@@ -72,6 +72,21 @@ jobs:
           echo "$RESPONSE"
 
           echo "$RESPONSE" | grep '"running":true'
+      
+      - name: Restart Application
+        run: |
+          curl -X POST \
+            "http://127.0.0.1:9000/applications/restart?id=console-test"
+
+      - name: Verify Restart Response
+        run: |
+          RESPONSE=$(curl -s \
+            "http://127.0.0.1:9000/applications/status?id=console-test")
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep '"running":true'
+
 
       - name: Verify Logs Endpoint
         run: |

@@ -10,6 +10,7 @@ import com.alexisdamien22.servermanager.http.HealthHandler;
 import com.alexisdamien22.servermanager.http.StartApplicationHandler;
 import com.alexisdamien22.servermanager.http.StopApplicationHandler;
 import com.alexisdamien22.servermanager.http.ApplicationLogsHandler;
+import com.alexisdamien22.servermanager.http.RestartApplicationHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
@@ -18,10 +19,6 @@ public class Main {
 
     public static void main(String[] args)
             throws Exception {
-
-        System.out.println(
-                "Starting Manager..."
-        );
 
         ConfigLoader loader =
                 new ConfigLoader();
@@ -36,12 +33,6 @@ public class Main {
                 config.getApplications()) {
 
             if (application.isAutoStart()) {
-
-                System.out.println(
-                        "Starting application: "
-                                + application.getId()
-                );
-
                 applicationManager.startApplication(
                     application
                 );
@@ -88,6 +79,13 @@ public class Main {
         );
 
         server.createContext(
+            "/applications/restart",
+            new RestartApplicationHandler(
+                applicationManager
+            )
+        );
+
+        server.createContext(
             "/applications/logs",
             new ApplicationLogsHandler(
                 applicationManager
@@ -95,9 +93,5 @@ public class Main {
         );
 
         server.start();
-
-        System.out.println(
-            "Manager started on port 9000"
-        );
     }
 }
