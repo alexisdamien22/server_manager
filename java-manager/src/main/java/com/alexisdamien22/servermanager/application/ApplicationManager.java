@@ -123,6 +123,15 @@ public class ApplicationManager {
 		return true;
 	}
 
+	public ManagedApplication restartApplication(
+        String id)
+        throws IOException {
+
+		stopApplication(id);
+
+		return startApplication(id);
+	}
+
     public boolean isRunning(
             String id) {
 
