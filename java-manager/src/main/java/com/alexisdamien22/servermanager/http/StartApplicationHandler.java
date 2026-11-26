@@ -22,6 +22,10 @@ public class StartApplicationHandler
     @Override
     public void handle(HttpExchange exchange)
         throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         if (!exchange.getRequestMethod()
             .equalsIgnoreCase("POST")) {
