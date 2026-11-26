@@ -19,10 +19,6 @@ public class Main {
     public static void main(String[] args)
             throws Exception {
 
-        System.out.println(
-                "Starting Manager..."
-        );
-
         ConfigLoader loader =
                 new ConfigLoader();
 
@@ -36,12 +32,6 @@ public class Main {
                 config.getApplications()) {
 
             if (application.isAutoStart()) {
-
-                System.out.println(
-                        "Starting application: "
-                                + application.getId()
-                );
-
                 applicationManager.startApplication(
                     application
                 );
@@ -95,9 +85,5 @@ public class Main {
         );
 
         server.start();
-
-        System.out.println(
-            "Manager started on port 9000"
-        );
     }
 }

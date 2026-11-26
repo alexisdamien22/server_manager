@@ -48,18 +48,7 @@ public class ApplicationManager {
         ApplicationConfig config)
         throws IOException {
 
-		System.out.println(
-			"Attempting to start: "
-			+ config.getId()
-		);
-
 		if (isRunning(config.getId())) {
-
-			System.out.println(
-				"Already running: "
-				+ config.getId()
-			);
-
 			return runningApplications.get(
 				config.getId()
 			);
@@ -67,11 +56,6 @@ public class ApplicationManager {
 
 		Process process =
 			launcher.launch(config);
-
-		System.out.println(
-			"Process started for: "
-			+ config.getId()
-		);
 
 		Thread consoleThread =
 			new Thread(
@@ -97,13 +81,6 @@ public class ApplicationManager {
 			application
 		);
 
-		System.out.println(
-			"Messages stored: "
-			+ consoleManager.getMessageCount(
-				config.getId()
-			)
-		);
-
 		return application;
 	}
 
@@ -111,23 +88,11 @@ public class ApplicationManager {
         String id)
 		throws IOException {
 
-		System.out.println(
-			"Start requested: " + id
-		);
-
-		System.out.println(
-			"Configured applications: "
-			+ configuredApplications.size()
-		);
-
 		ApplicationConfig config =
 			configuredApplications.get(id);
 
 		if (config == null) {
 
-			System.out.println(
-				"Application not found: " + id
-			);
 
 			throw new IllegalArgumentException(
 				"Unknown application: " + id
@@ -140,19 +105,10 @@ public class ApplicationManager {
     public boolean stopApplication(
         String id) {
 
-		System.out.println(
-			"Stop requested: " + id
-		);
-
 		ManagedApplication application =
 			runningApplications.get(id);
 
 		if (application == null) {
-
-			System.out.println(
-				"Application not running: "
-				+ id
-			);
 
 			return false;
 		}
@@ -163,16 +119,6 @@ public class ApplicationManager {
 		process.destroy();
 
 		runningApplications.remove(id);
-
-		System.out.println(
-			"Stopped application: "
-			+ id
-		);
-
-		System.out.println(
-			"Running applications: "
-			+ runningApplications.size()
-		);
 
 		return true;
 	}
