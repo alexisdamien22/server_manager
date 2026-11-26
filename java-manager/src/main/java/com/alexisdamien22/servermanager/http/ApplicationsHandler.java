@@ -24,6 +24,10 @@ public class ApplicationsHandler
     @Override
     public void handle(HttpExchange exchange)
         throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         StringBuilder json =
             new StringBuilder("[");

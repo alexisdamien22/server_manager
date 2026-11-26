@@ -12,6 +12,10 @@ public class HealthHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange)
         throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         String response = "{\"status\":\"UP\"}";
 

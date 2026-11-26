@@ -25,17 +25,21 @@ public class ApplicationLogsHandler
     @Override
     public void handle(HttpExchange exchange)
         throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         if (!exchange.getRequestMethod()
         .equalsIgnoreCase("GET")) {
 
-    exchange.sendResponseHeaders(
-            405,
-            -1
-        );
+        exchange.sendResponseHeaders(
+                405,
+                -1
+            );
 
-        return;
-    }
+            return;
+        }
 
         String query =
             exchange.getRequestURI()
