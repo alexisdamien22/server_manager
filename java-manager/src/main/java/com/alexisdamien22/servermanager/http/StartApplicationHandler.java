@@ -75,8 +75,13 @@ public class StartApplicationHandler
 
         } catch (Exception exception) {
 
+            exception.printStackTrace();
+
             String response =
-                "{\"status\":\"error\"}";
+                String.format(
+                    "{\"status\":\"error\",\"message\":\"%s\"}",
+                    exception.getMessage()
+                );
 
             exchange.sendResponseHeaders(
                 500,
