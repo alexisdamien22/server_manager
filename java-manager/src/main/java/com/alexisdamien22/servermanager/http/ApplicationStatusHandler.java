@@ -22,6 +22,10 @@ public class ApplicationStatusHandler
     @Override
     public void handle(HttpExchange exchange)
         throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         String query =
             exchange.getRequestURI()

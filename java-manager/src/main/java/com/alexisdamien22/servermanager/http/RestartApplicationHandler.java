@@ -21,61 +21,65 @@ public class RestartApplicationHandler
 
     @Override
     public void handle(HttpExchange exchange)
-            throws IOException {
+        throws IOException {
+
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             exchange.sendResponseHeaders(
-                    405,
-                    -1
+                405,
+                1
             );
 
             return;
         }
 
         String query =
-                exchange.getRequestURI()
-                        .getQuery();
+            exchange.getRequestURI()
+                .getQuery();
 
         if (query == null
-                || !query.startsWith("id=")) {
+            || !query.startsWith("id=")) {
 
             exchange.sendResponseHeaders(
-                    400,
-                    -1
+                400,
+                -1
             );
 
             return;
         }
 
         String id =
-                query.substring(3);
+            query.substring(3);
 
         applicationManager
-                .restartApplication(id);
+            .restartApplication(id);
 
         String response =
-                "{\"status\":\"restarted\"}";
+            "{\"status\":\"restarted\"}";
 
         byte[] bytes =
-                response.getBytes(
-                        StandardCharsets.UTF_8
-                );
+            response.getBytes(
+                StandardCharsets.UTF_8
+            );
 
         exchange.getResponseHeaders()
-                .add(
-                        "Content-Type",
-                        "application/json"
-                );
+            .add(
+                "Content-Type",
+                "application/json"
+            );
 
         exchange.sendResponseHeaders(
-                200,
-                bytes.length
+            200,
+            bytes.length
         );
 
         try (OutputStream os =
-                     exchange.getResponseBody()) {
+            exchange.getResponseBody()) {
 
             os.write(bytes);
         }
