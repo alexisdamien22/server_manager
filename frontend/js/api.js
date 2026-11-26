@@ -43,3 +43,14 @@ async function restartApplication(
         }
     );
 }
+
+async function getLogs(
+    id) {
+
+    const response =
+        await fetch(
+            `${API_URL}/applications/logs?id=${id}`
+        );
+
+    return response.json();
+}

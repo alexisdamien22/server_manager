@@ -16,6 +16,11 @@ async function init() {
         refreshApplications,
         5000
     );
+
+    setInterval(
+        refreshLogs,
+        2000
+    );
 }
 
 init();

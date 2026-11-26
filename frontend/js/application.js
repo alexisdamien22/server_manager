@@ -48,6 +48,11 @@ function renderApplications(
                         Restart
                     </button>
 
+                    <button
+                        onclick="loadLogs('${application.id}')">
+                        Logs
+                    </button>
+
                 </div>
             `;
 

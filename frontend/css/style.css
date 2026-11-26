@@ -55,3 +55,32 @@ button {
 button:hover {
     opacity: .8;
 }
+
+#layout {
+
+    display: grid;
+
+    grid-template-columns:
+        400px 1fr;
+
+    gap: 1rem;
+}
+
+#logs {
+
+    background: #111;
+
+    color: #e0e0e0;
+
+    padding: 1rem;
+
+    border-radius: 8px;
+
+    min-height: 500px;
+
+    overflow-y: auto;
+
+    font-family: monospace;
+
+    white-space: pre-wrap;
+}
