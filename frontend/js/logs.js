@@ -9,6 +9,11 @@ async function loadLogs(
     const data =
         await getLogs(id);
 
+    document.getElementById(
+        "logs-title"
+    ).textContent =
+        `Logs - ${id}`;
+
     renderLogs(data);
 }
 
@@ -38,6 +43,8 @@ function renderLogs(
                     ).toLocaleTimeString()}] ${log.message}`
             )
             .join("<br>");
+    container.scrollTop =
+        container.scrollHeight;
 }
 
 async function refreshLogs() {

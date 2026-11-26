@@ -19,7 +19,7 @@ async function init() {
 
     setInterval(
         refreshLogs,
-        2000
+        1000
     );
 }
 
