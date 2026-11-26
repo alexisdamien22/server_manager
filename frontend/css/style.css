@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    padding: 2rem;
+
+    font-family: Arial, sans-serif;
+
+    background: #f5f5f5;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+#applications {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.application-card {
+
+    background: white;
+
+    border-radius: 8px;
+
+    padding: 1rem;
+
+    box-shadow:
+        0 2px 4px rgba(0,0,0,.1);
+}
+
+.running {
+    color: green;
+}
+
+.stopped {
+    color: red;
+}
