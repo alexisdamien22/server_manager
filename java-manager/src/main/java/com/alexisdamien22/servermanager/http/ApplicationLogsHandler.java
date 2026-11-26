@@ -26,6 +26,17 @@ public class ApplicationLogsHandler
     public void handle(HttpExchange exchange)
         throws IOException {
 
+        if (!exchange.getRequestMethod()
+        .equalsIgnoreCase("GET")) {
+
+    exchange.sendResponseHeaders(
+            405,
+            -1
+        );
+
+        return;
+    }
+
         String query =
             exchange.getRequestURI()
                 .getQuery();
@@ -79,6 +90,12 @@ public class ApplicationLogsHandler
 
         byte[] bytes =
             response.getBytes(StandardCharsets.UTF_8);
+
+        exchange.getResponseHeaders()
+            .add(
+                "Content-Type",
+                "application/json"
+            );
 
         exchange.sendResponseHeaders(
             200,
