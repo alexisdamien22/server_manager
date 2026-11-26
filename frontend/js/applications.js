@@ -26,24 +26,27 @@ function renderApplications(
 
                 <p>
                     ${application.running
-                    ? '<span class="running">🟢 Running</span>'
-                    : '<span class="stopped">🔴 Stopped</span>'
+                    ? '<span class="running">Running</span>'
+                    : '<span class="stopped">Stopped</span>'
                 }
                 </p>
 
                 <div class="actions">
 
                     <button
+                        ${application.running ? "disabled" : ""}
                         onclick="handleStart('${application.id}')">
                         Start
                     </button>
 
                     <button
+                        ${application.running ? "" : "disabled"}
                         onclick="handleStop('${application.id}')">
                         Stop
                     </button>
 
                     <button
+                        ${application.running ? "" : "disabled"}
                         onclick="handleRestart('${application.id}')">
                         Restart
                     </button>

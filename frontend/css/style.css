@@ -84,3 +84,35 @@ button:hover {
 
     white-space: pre-wrap;
 }
+
+button:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
+}
+
+.status {
+
+    padding: .25rem .5rem;
+
+    border-radius: 4px;
+
+    font-size: .9rem;
+
+    font-weight: bold;
+}
+
+.running {
+
+    background: #dcfce7;
+
+    color: #15803d;
+}
+
+.stopped {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+}
