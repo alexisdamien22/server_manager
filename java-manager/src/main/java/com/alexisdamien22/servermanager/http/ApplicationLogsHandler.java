@@ -58,16 +58,34 @@ public class ApplicationLogsHandler
         List<ConsoleMessage> logs =
             this.applicationManager.getConsoleManager().getMessages(id);
 
-        StringBuilder logsBuilder = new StringBuilder();
+        StringBuilder logsBuilder =
+            new StringBuilder();
+
         logsBuilder.append("[");
 
         for (int i = 0; i < logs.size(); i++) {
-            ConsoleMessage log = logs.get(i);
 
-            logsBuilder
+            ConsoleMessage log =
+                logs.get(i);
+
+            logsBuilder.append("{")
+
+                .append("\"message\":\"")
+                .append(
+                    escapeJson(
+                        log.getMessage()
+                    )
+                )
+                .append("\",")
+
+                .append("\"timestamp\":\"")
+                .append(
+                    log.getTimestamp()
+                        .toString()
+                )
                 .append("\"")
-                .append(escapeJson(log.getMessage()))
-                .append("\"");
+
+                .append("}");
 
             if (i < logs.size() - 1) {
                 logsBuilder.append(",");
