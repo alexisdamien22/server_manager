@@ -22,10 +22,14 @@ public class StopApplicationHandler
 
     @Override
     public void handle(HttpExchange exchange)
-            throws IOException {
+        throws IOException {
+        
+        HttpUtils.addCorsHeaders(
+            exchange
+        );
 
         if (!exchange.getRequestMethod()
-                .equalsIgnoreCase("POST")) {
+            .equalsIgnoreCase("POST")) {
 
             exchange.sendResponseHeaders(
                 405,
@@ -40,7 +44,7 @@ public class StopApplicationHandler
                 .getQuery();
 
         if (query == null ||
-                !query.startsWith("id=")) {
+            !query.startsWith("id=")) {
 
             exchange.sendResponseHeaders(
                 400,
