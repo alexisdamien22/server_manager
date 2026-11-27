@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AgentRegistrationService {
 
@@ -102,38 +104,42 @@ public class AgentRegistrationService {
     }
 
     private long extractLong(
-            String json,
-            String key) {
+        String json,
+        String key) {
 
-        String value =
-                json.replaceAll(
-                        ".*\"" + key
-                                + "\"\\s*:\\s*([0-9]+).*",
-                        "$1"
-                );
-
-        return Long.parseLong(
-                value
+        Pattern pattern = Pattern.compile(
+            "\"" + Pattern.quote(key)
+            + "\"\\s*:\\s*([0-9]+)"
         );
+
+        Matcher matcher = pattern.matcher(json);
+
+        if (!matcher.find()) {
+            throw new IllegalArgumentException(
+                "Missing or invalid JSON field: " + key
+            );
+        }
+
+        return Long.parseLong(matcher.group(1));
     }
 
     private String extractString(
         String json,
         String key) {
 
-        String value =
-            json.replaceAll(
-                "(?s).*\"" + key
-                    + "\"\\s*:\\s*\"([^\"]+)\".*",
-                "$1"
-            ).trim();
+        Pattern pattern = Pattern.compile(
+            "\"" + Pattern.quote(key)
+            + "\"\\s*:\\s*\"([^\"]*)\""
+        );
 
-        if (value.equals(json.trim())) {
+        Matcher matcher = pattern.matcher(json);
+
+        if (!matcher.find()) {
             throw new IllegalArgumentException(
                 "Missing JSON field: " + key
             );
         }
 
-        return value;
+        return matcher.group(1);
     }
 }
