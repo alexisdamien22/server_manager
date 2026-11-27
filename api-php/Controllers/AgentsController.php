@@ -2,7 +2,7 @@
 
 class AgentsController
 {
-    public function register(): void
+    public static function register(): void
     {
         $body = json_decode(
             file_get_contents(
@@ -53,10 +53,10 @@ class AgentsController
         ]);
     }
 
-    public function heartbeat(): void
+    public static function heartbeat(): void
     {
         $token =
-            $this->extractBearerToken();
+            self::extractBearerToken();
         
         $db = get_db();
         $statement =
