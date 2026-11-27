@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - feature/php-java-contract
+      - feature/api-agent-handshake
 
   pull_request:
     branches: [main]
