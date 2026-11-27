@@ -53,14 +53,40 @@ class AgentsController
         ]);
     }
 
-    public static function heartbeat(): void
-    {
+    public static function heartbeat(
+        array $params = []
+    ): void {
+
+        $authorization =
+            $_SERVER['HTTP_AUTHORIZATION']
+            ?? '';
+
+        if (!str_starts_with(
+            $authorization,
+            'Bearer '
+        )) {
+
+            http_response_code(401);
+
+            echo json_encode([
+                'error' =>
+                    'Missing token'
+            ]);
+
+            return;
+        }
+
         $token =
-            self::extractBearerToken();
-        
-        $db = get_db();
+            substr(
+                $authorization,
+                7
+            );
+
+        $database =
+            get_db();
+
         $statement =
-            $db->prepare(
+            $database->prepare(
                 '
                 UPDATE agents
                 SET last_seen = NOW()
@@ -71,6 +97,18 @@ class AgentsController
         $statement->execute([
             'token' => $token
         ]);
+
+        if ($statement->rowCount() === 0) {
+
+            http_response_code(401);
+
+            echo json_encode([
+                'error' =>
+                    'Invalid token'
+            ]);
+
+            return;
+        }
 
         echo json_encode([
             'status' => 'ok'

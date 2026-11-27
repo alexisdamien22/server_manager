@@ -171,6 +171,61 @@ jobs:
             -U "$DB_USER" \
             -d "$DB_NAME" \
             -c "SELECT * FROM agents;"
+          
+      - name: Read Initial Last Seen
+        run: |
+          LAST_SEEN_BEFORE=$(
+            PGPASSWORD="$DB_PASS" psql \
+              -h "$DB_HOST" \
+              -p "$DB_PORT" \
+              -U "$DB_USER" \
+              -d "$DB_NAME" \
+              -At \
+              -c "SELECT last_seen FROM agents LIMIT 1"
+          )
+
+          echo "LAST_SEEN_BEFORE=$LAST_SEEN_BEFORE" >> $GITHUB_ENV
+
+      - name: Wait Before Heartbeat
+        run: sleep 2
+
+      - name: Heartbeat Agent
+        run: |
+          TOKEN=$(
+            PGPASSWORD="$DB_PASS" psql \
+              -h "$DB_HOST" \
+              -p "$DB_PORT" \
+              -U "$DB_USER" \
+              -d "$DB_NAME" \
+              -At \
+              -c "SELECT token FROM agents LIMIT 1"
+          )
+
+          curl -fsS \
+            -X POST \
+            http://127.0.0.1:8000/api/agents/heartbeat \
+            -H "Authorization: Bearer $TOKEN"
+
+      - name: Verify Last Seen Updated
+        run: |
+          LAST_SEEN_AFTER=$(
+            PGPASSWORD="$DB_PASS" psql \
+              -h "$DB_HOST" \
+              -p "$DB_PORT" \
+              -U "$DB_USER" \
+              -d "$DB_NAME" \
+              -At \
+              -c "SELECT last_seen FROM agents LIMIT 1"
+          )
+
+          echo "Before: $LAST_SEEN_BEFORE"
+          echo "After : $LAST_SEEN_AFTER"
+
+          if [ "$LAST_SEEN_BEFORE" = "$LAST_SEEN_AFTER" ]
+          then
+            echo "Heartbeat did not update last_seen"
+            exit 1
+          fi
 
       - name: Show API Logs
         if: always()
