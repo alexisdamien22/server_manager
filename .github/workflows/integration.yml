@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - feature/manager-api-handskake
+      - feature/manager-api-handshake
 
   pull_request:
     branches: [main]
