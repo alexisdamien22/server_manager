@@ -445,7 +445,25 @@ CREATE TABLE installation_history (
 );
 
 -- ============================================================
--- 14. INDEXES
+-- 14. AGENTS
+-- ============================================================
+
+CREATE TABLE agents (
+    id SERIAL PRIMARY KEY,
+
+    name VARCHAR(255) NOT NULL,
+
+    version VARCHAR(50) NOT NULL,
+
+    token TEXT NOT NULL,
+
+    last_seen TIMESTAMP NOT NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- 15. INDEXES
 -- ============================================================
 
 CREATE INDEX idx_servers_host_id
@@ -490,8 +508,11 @@ CREATE INDEX idx_installation_history_server
 CREATE INDEX idx_installation_history_job
     ON installation_history(installation_id);
 
+CREATE INDEX idx_agents_last_seen
+ON agents(last_seen);
+
 -- ============================================================
--- 15. DEFAULT UPDATED_AT TRIGGER
+-- 16. DEFAULT UPDATED_AT TRIGGER
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -523,7 +544,7 @@ BEFORE UPDATE ON download_jobs
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ============================================================
--- 16. INITIAL GAME DATA
+-- 17. INITIAL GAME DATA
 -- ============================================================
 
 INSERT INTO games (name, slug, description, category)

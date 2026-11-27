@@ -3,12 +3,17 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/Router.php';
+require_once __DIR__ . '/Controllers/AgentsController.php';
 require_once __DIR__ . '/Controllers/ServersController.php';
 require_once __DIR__ . '/Controllers/HostsController.php';
 require_once __DIR__ . '/Controllers/GamesController.php';
 require_once __DIR__ . '/Controllers/ConfigsController.php';
 
 $router = new Router();
+
+//AGENT ROUTES
+$router->post('/api/agents/register',[AgentsController::class, 'register']);
+$router->post('/api/agents/heartbeat',[AgentsController::class, 'heartbeat']);
 
 // SERVER ROUTES
 $router->get('/api/servers', [ServersController::class, 'list']);
