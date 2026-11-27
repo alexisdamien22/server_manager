@@ -60,3 +60,50 @@ jobs:
         run: |
           printf 'DB_HOST=%s\nDB_PORT=%s\nDB_NAME=%s\nDB_USER=%s\nDB_PASS=%s\n' \
             "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" "$DB_PASS" > .env
+
+      - name: Install Database Schema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD="$DB_PASS" psql \
+            -h "$DB_HOST" \
+            -p "$DB_PORT" \
+            -U "$DB_USER" \
+            -d "$DB_NAME" \
+            -v ON_ERROR_STOP=1 \
+            -f database/database.sql
+
+      - name: Start PHP API
+        run: |
+          php -S 127.0.0.1:8000 \
+            -t api-php api-php/index.php \
+            > /tmp/api.log 2>&1 &
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build Manager
+        run: |
+          cd java-manager
+          mvn -B clean package
+
+      - name: Start Manager
+        run: |
+          cd java-manager
+          mvn exec:java \
+            -Dexec.mainClass=com.alexisdamien22.servermanager.Main \
+            > /tmp/manager.log 2>&1 &
+
+      - name: Run Integration Tests
+        run: php tests/integration.php
+
+      - name: Show API Logs
+        if: failure()
+        run: cat /tmp/api.log
+
+      - name: Show Manager Logs
+        if: failure()
+        run: cat /tmp/manager.log
