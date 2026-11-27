@@ -58,5 +58,5 @@ jobs:
 
       - name: Create Environment File
         run: |
-          printf "DB_HOST=%s\nDB_PORT=%s\nDB_NAME=%s\nDB_USER=%s\nDB_PASS=%s\n" \
-            "$DB_HOST" "$DB_PORT" "$
+          printf 'DB_HOST=%s\nDB_PORT=%s\nDB_NAME=%s\nDB_USER=%s\nDB_PASS=%s\n' \
+            "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" "$DB_PASS" > .env
