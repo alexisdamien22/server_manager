@@ -5,7 +5,7 @@ declare(strict_types=1);
 $baseApi = 'http://127.0.0.1:8000';
 $baseManager = 'http://127.0.0.1:9000';
 
-$agentName = getenv('EXPECTED_AGENT_NAME') ?: 'github-runner';
+$agentName = getenv('EXPECTED_AGENT_NAME') ?: 'local-manager';
 
 function request(string $url, string $method = 'GET', array $headers = []): array
 {
