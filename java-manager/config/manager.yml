@@ -1,0 +1,5 @@
+agent:
+  name: local-manager
+
+api:
+  url: http://127.0.0.1:8000

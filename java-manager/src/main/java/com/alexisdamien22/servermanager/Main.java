@@ -1,5 +1,7 @@
 package com.alexisdamien22.servermanager;
 
+import com.alexisdamien22.servermanager.agent.AgentInfo;
+import com.alexisdamien22.servermanager.agent.AgentRegistrationService;
 import com.alexisdamien22.servermanager.application.ApplicationManager;
 import com.alexisdamien22.servermanager.config.ApplicationConfig;
 import com.alexisdamien22.servermanager.config.ConfigLoader;
@@ -21,13 +23,45 @@ public class Main {
             throws Exception {
 
         ConfigLoader loader =
-                new ConfigLoader();
+            new ConfigLoader();
 
         ManagerConfig config =
-                loader.load();
+            loader.load();
 
         ApplicationManager applicationManager =
-                new ApplicationManager(config);
+            new ApplicationManager(config);
+        
+        try {
+
+            AgentRegistrationService
+                registrationService =
+                new AgentRegistrationService(
+                    config
+                        .getApi()
+                        .getUrl(),
+
+                    config
+                        .getAgent()
+                        .getName()
+                );
+
+            AgentInfo agentInfo =
+                    registrationService
+                            .register();
+
+            System.out.println(
+                "Registered agent "
+                + agentInfo.getAgentId()
+            );
+
+        } catch (Exception exception) {
+
+            System.out.println(
+                "Agent registration failed"
+            );
+
+            exception.printStackTrace();
+        }
 
         for (ApplicationConfig application :
                 config.getApplications()) {
