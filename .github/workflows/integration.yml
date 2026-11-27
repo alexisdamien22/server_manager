@@ -1,0 +1,183 @@
+name: Integration Tests
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  integration:
+
+    runs-on: ubuntu-latest
+
+    services:
+
+      postgres:
+        image: postgres:16
+
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: server_manager_test
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd "pg_isready -U test_user -d server_manager_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_NAME: server_manager_test
+      DB_USER: test_user
+      DB_PASS: test_password
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+
+        with:
+          php-version: '8.3'
+          extensions: pdo,pdo_pgsql
+
+      - name: Composer Install
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create Environment File
+        run: |
+          printf "DB_HOST=%s\nDB_PORT=%s\nDB_NAME=%s\nDB_USER=%s\nDB_PASS=%s\n" \
+            "$DB_HOST" "$DB_PORT" "$DB_NAME" "$DB_USER" "$DB_PASS" > .env
+
+      - name: Install Database Schema
+        run: |
+          PGPASSWORD="$DB_PASS" psql \
+            -h "$DB_HOST" \
+            -p "$DB_PORT" \
+            -U "$DB_USER" \
+            -d "$DB_NAME" \
+            -v ON_ERROR_STOP=1 \
+            -f database/database.sql
+
+      - name: Start PHP API
+        run: |
+          php -S 127.0.0.1:8000 \
+            -t api-php api-php/index.php \
+            > /tmp/api.log 2>&1 &
+
+      - name: Wait For PHP API
+        run: |
+          for i in {1..30}; do
+
+            if curl -fsS \
+              http://127.0.0.1:8000/api/hosts \
+              > /dev/null
+
+            then
+              echo "PHP API ready"
+              exit 0
+            fi
+
+            sleep 1
+          done
+
+          cat /tmp/api.log
+          exit 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build Manager
+        run: |
+          cd java-manager
+          mvn -B clean package
+
+      - name: Start Manager
+        run: |
+          cd java-manager
+
+          mvn exec:java \
+            -Dexec.mainClass=com.alexisdamien22.servermanager.Main \
+            > /tmp/manager.log 2>&1 &
+
+      - name: Wait For Manager
+        run: |
+          for i in {1..20}; do
+
+            if curl -fsS \
+              http://127.0.0.1:9000/health \
+              > /dev/null
+
+            then
+              echo "Manager ready"
+              exit 0
+            fi
+
+            sleep 1
+          done
+
+          cat /tmp/manager.log
+          exit 1
+
+      - name: Verify API Health
+        run: |
+          curl -fsS \
+            http://127.0.0.1:8000/api/hosts
+
+      - name: Verify Manager Health
+        run: |
+          curl -fsS \
+            http://127.0.0.1:9000/health
+
+      - name: Register Agent
+        run: |
+          RESPONSE=$(
+            curl -s \
+              -X POST \
+              http://127.0.0.1:8000/api/agents/register \
+              -H "Content-Type: application/json" \
+              -d '{
+                    "name":"github-runner",
+                    "version":"0.3.0"
+                  }'
+          )
+
+          echo "$RESPONSE"
+
+          echo "$RESPONSE" | grep "agentId"
+
+      - name: Verify Agent Stored
+        run: |
+          PGPASSWORD="$DB_PASS" psql \
+            -h "$DB_HOST" \
+            -p "$DB_PORT" \
+            -U "$DB_USER" \
+            -d "$DB_NAME" \
+            -c "SELECT * FROM agents;"
+
+      - name: Show API Logs
+        if: always()
+        run: |
+          echo "===== API ====="
+          cat /tmp/api.log
+
+      - name: Show Manager Logs
+        if: always()
+        run: |
+          echo "===== MANAGER ====="
+          cat /tmp/manager.log

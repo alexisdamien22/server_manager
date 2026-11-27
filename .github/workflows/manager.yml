@@ -1,6 +1,8 @@
 name: Manager Tests
 
 on:
+  workflow_dispatch:
+  
   push:
     branches: [main]
     paths:
