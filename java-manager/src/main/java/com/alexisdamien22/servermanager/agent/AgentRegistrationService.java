@@ -108,7 +108,7 @@ public class AgentRegistrationService {
         String value =
                 json.replaceAll(
                         ".*\"" + key
-                                + "\":([0-9]+).*",
+                                + "\"\\s*:\\s*([0-9]+).*",
                         "$1"
                 );
 
@@ -118,13 +118,22 @@ public class AgentRegistrationService {
     }
 
     private String extractString(
-            String json,
-            String key) {
+        String json,
+        String key) {
 
-        return json.replaceAll(
-                ".*\"" + key
-                        + "\":\"([^\"]+)\".*",
+        String value =
+            json.replaceAll(
+                "(?s).*\"" + key
+                    + "\"\\s*:\\s*\"([^\"]+)\".*",
                 "$1"
-        );
+            ).trim();
+
+        if (value.equals(json.trim())) {
+            throw new IllegalArgumentException(
+                "Missing JSON field: " + key
+            );
+        }
+
+        return value;
     }
 }
