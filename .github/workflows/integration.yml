@@ -41,7 +41,7 @@ jobs:
       DB_NAME: server_manager_test
       DB_USER: test_user
       DB_PASS: test_password
-      EXPECTED_AGENT_NAME: github-runner
+      EXPECTED_AGENT_NAME: local-manager
 
     steps:
       - name: Checkout
